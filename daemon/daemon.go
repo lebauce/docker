@@ -824,7 +824,7 @@ func NewDaemonFromDirectory(config *Config, eng *engine.Engine) (*Daemon, error)
 		return nil, err
 	}
 
-	volumesDriver, err := graphdriver.GetDriver("vfs", config.Root, config.GraphOptions)
+	volumesDriver, err := graphdriver.GetDriver(config.VolumeDriver, config.Root, config.VolumeOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -935,6 +935,9 @@ func NewDaemonFromDirectory(config *Config, eng *engine.Engine) (*Daemon, error)
 		}
 		if err := daemon.containerGraph.Close(); err != nil {
 			log.Errorf("daemon.containerGraph.Close(): %s", err.Error())
+		}
+		if err := daemon.volumes.Cleanup(); err != nil {
+			log.Errorf("daemon.volumes.Cleanup(): %s", err.Error())
 		}
 	})
 

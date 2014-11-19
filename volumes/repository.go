@@ -158,6 +158,16 @@ func (r *Repository) restore() error {
 	return nil
 }
 
+func (r *Repository) Cleanup() error {
+	r.lock.Lock()
+	defer r.lock.Unlock()
+	for _, vol := range r.volumes {
+		r.driver.Put(vol.ID)
+		r.remove(vol)
+	}
+	return nil
+}
+
 func (r *Repository) Get(path string) *Volume {
 	r.lock.Lock()
 	vol := r.get(path)

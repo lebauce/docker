@@ -36,6 +36,8 @@ type Config struct {
 	GraphDriver                 string
 	GraphOptions                []string
 	ExecDriver                  string
+	VolumeDriver                string
+	VolumeOptions               []string
 	Mtu                         int
 	DisableNetwork              bool
 	EnableSelinuxSupport        bool
@@ -60,10 +62,12 @@ func (config *Config) InstallFlags() {
 	flag.BoolVar(&config.InterContainerCommunication, []string{"#icc", "-icc"}, true, "Enable inter-container communication")
 	flag.StringVar(&config.GraphDriver, []string{"s", "-storage-driver"}, "", "Force the Docker runtime to use a specific storage driver")
 	flag.StringVar(&config.ExecDriver, []string{"e", "-exec-driver"}, "native", "Force the Docker runtime to use a specific exec driver")
+	flag.StringVar(&config.VolumeDriver, []string{"-volume-driver"}, "vfs", "Force the Docker runtime to use a specific volume driver")
 	flag.BoolVar(&config.EnableSelinuxSupport, []string{"-selinux-enabled"}, false, "Enable selinux support. SELinux does not presently support the BTRFS storage driver")
 	flag.IntVar(&config.Mtu, []string{"#mtu", "-mtu"}, 0, "Set the containers network MTU\nif no value is provided: default to the default route MTU or 1500 if no default route is available")
 	opts.IPVar(&config.DefaultIp, []string{"#ip", "-ip"}, "0.0.0.0", "Default IP address to use when binding container ports")
 	opts.ListVar(&config.GraphOptions, []string{"-storage-opt"}, "Set storage driver options")
+	opts.ListVar(&config.VolumeOptions, []string{"-volume-opt"}, "Set volume driver options")
 	// FIXME: why the inconsistency between "hosts" and "sockets"?
 	opts.IPListVar(&config.Dns, []string{"#dns", "-dns"}, "Force Docker to use specific DNS servers")
 	opts.DnsSearchListVar(&config.DnsSearch, []string{"-dns-search"}, "Force Docker to use specific DNS search domains")
